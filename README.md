@@ -32,6 +32,10 @@ it's running under python 3
 
     pip install -r requirements.txt
 
+if there is another python version on your server, you can create virtual env `venv` with blow.
+
+    virtualenv -p <python path> venv
+
 ## auto run
 
 add auto task with `crontab -e`
