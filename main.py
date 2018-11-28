@@ -38,7 +38,9 @@ def send_mail(title, text):
 
 
 def load_cards():
-    card_dict = json.load(open(SAVE_FILE, "r"))
+    card_json=open(SAVE_FILE, "r")
+    card_dict = json.load(card_json)
+    card_json.close()
     if not card_dict:
         return {}
     return card_dict
@@ -56,22 +58,24 @@ def save_card(id, title, text):
 
 
 def scan_cards_list(id=None):
-    url = "https://m.weibo.cn/api/container/getIndex?type=uid&value=5886054987&containerid=1076035886054987&page=" + \
-        str(id)
+    url = "https://m.weibo.cn/api/container/getIndex?type=uid&value=5886054987&containerid=1076035886054987&page="
+    if id:
+        url = url+str(id)
     response = requests.get(url, headers=header)
     res_json = response.content
     res_dict = json.loads(res_json)
     for i in res_dict['data']['cards']:
-        if '改造预告' in i['mblog']['text']:
-            print('-----------------'+i['mblog']['text'])
-            text = "<a href='"+i['scheme'] + \
-                "'>改造预告</a><br>" + i['mblog']['text']
-            save_card(i['mblog']['id'], '改造预告', text)
-        if '新船预告' in i['mblog']['text']:
-            print('-----------------'+i['mblog']['text'])
-            text = "<a href='"+i['scheme'] + \
-                "'>新船预告</a><br>" + i['mblog']['text']
-            save_card(i['mblog']['id'], '新船预告', text)
+        if "mblog" in i:
+            if '改造预告' in i['mblog']['text']:
+                print('-----------------'+i['mblog']['text'])
+                text = "<a href='"+i['scheme'] + \
+                    "'>改造预告</a><br>" + i['mblog']['text']
+                save_card(i['mblog']['id'], '改造预告', text)
+            if '新船预告' in i['mblog']['text']:
+                print('-----------------'+i['mblog']['text'])
+                text = "<a href='"+i['scheme'] + \
+                    "'>新船预告</a><br>" + i['mblog']['text']
+                save_card(i['mblog']['id'], '新船预告', text)
 
 
 if __name__ == '__main__':
